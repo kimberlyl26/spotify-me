@@ -9,6 +9,7 @@ Have the names of all search results print as a list.
 var $form = $('#search')
 var $searchType = $('#search-type');
 var $searchKey = $('#search-keyword');
+var $results = $('#results');
 $(function (){
     $form.on("submit", function(e){
         e.preventDefault();
@@ -17,17 +18,32 @@ $(function (){
         var type = $searchType.val();
         if(type == 'artist'){
             url = searchByArtist($searchKey.val())
+            $.ajax({
+                url: url,
+                method: "get",
+            }).done(function(response){
+                console.log(response)
+                for(var i=0; i<response.artists.items.length; i++){
+                    $results.append("<li>"+response.artists.items[i].name+"</li>");
+                }
+
+        })
         }
         else{
             url = searchByTrack($searchKey.val());
+            $.ajax({
+                url:url,
+                method: "get",
+
+            }).done(function(response){
+                console.log(response)
+                for (var i=0; i<response.tracks.items.length; i++){
+                    $results.append("<li>"+response.tracks.items[i].name+" artist: "+response.tracks.items[i].artist+"</li>");
+                }
+            })
         }
         
-        $.ajax({
-            url: url,
-            method: "get",
-        }).done(function(response){
-            console.log(response)
-        })
+
 
     })
 
